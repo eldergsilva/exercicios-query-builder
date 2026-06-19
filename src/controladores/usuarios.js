@@ -76,8 +76,8 @@ const atualizarPerfil = async (req, res) => {
 				nome,
 				email,
 				senha: senhaCriptografada,
-				nome_loja,
-			})
+				nome_loja
+			});
 
 		if (!usuarioAtualizado) {
 			return res.status(400).json('O usuario não foi atualizado')

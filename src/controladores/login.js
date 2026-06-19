@@ -11,20 +11,17 @@ const login = async (req, res) => {
     }
 
     try {
-        const { rowCount, rows } = await conexao.query('select * from usuarios where email = $1', [email]);
+        const usuario = await knex('usuarios').where({email}).first()        
 
-        if (rowCount === 0) {
-            return res.status(400).json("O usuario não foi encontrado");
+        if (!usuario) {
+            return res.status(404).json("O usuario não foi encotrado");
         }
-
-        const usuario = rows[0];
-
+        
         const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
-
+        
         if (!senhaCorreta) {
-            return res.status(400).json("Email e senha não confere");
+            return res.status(404).json("Email e senha não confere");
         }
-
         const token = jwt.sign({ id: usuario.id }, senhaHash, { expiresIn: '8h' });
 
         const { senha: _, ...dadosUsuario } = usuario;
